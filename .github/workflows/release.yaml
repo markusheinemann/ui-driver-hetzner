@@ -1,18 +1,25 @@
-name: Release
+name: Release Assets
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   create-version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 16
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
-      - name: Run semantic-release
-        run: yarn semantic-release
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build Assets
+        run: yarn build
+      - name: Create Version
+        run: npx semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
